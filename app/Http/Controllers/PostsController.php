@@ -38,7 +38,7 @@ class PostsController extends Controller
     {
         $validated = $request->validated();
 
-        $post = BlogPost::create($request);
+        $post = BlogPost::create($validated);
 
         // $post = new BlogPost();
         // $post->title = $request->input('title');
@@ -58,9 +58,9 @@ class PostsController extends Controller
      */
     public function show($id)
     {
-        $user = BlogPost::find($id);
+        $post = BlogPost::find($id);
 
-        return view('posts.show', ['user' => $user]);
+        return view('posts.show', ['post' => $post]);
     }
 
     /**
