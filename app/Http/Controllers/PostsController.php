@@ -22,8 +22,6 @@ class PostsController extends Controller
             }
         }
 
-        dd(DB::getQueryLog());
-
         return view('posts.index', [
             'posts' => BlogPost::orderBy('updated_at', 'desc')->take(10)->get()
         ]);
