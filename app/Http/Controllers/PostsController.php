@@ -6,16 +6,25 @@ use Illuminate\Http\Request;
 use App\Models\BlogPost;
 use App\Http\Requests\StorePost;
 
+use Illuminate\Support\Facades\DB;
+
 class PostsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return view('posts.index', ['posts' => BlogPost::get()]);
+        DB::connection()->enableQueryLog();
+
+        $posts = BlogPost::all();
+
+        foreach ($posts as $post) {
+            foreach ($post->comments as $comment) {
+                echo $comment->content;
+            }
+        }
+
+        return view('posts.index', [
+            'posts' => BlogPost::orderBy('updated_at', 'desc')->take(10)->get()
+        ]);
     }
 
     /**
