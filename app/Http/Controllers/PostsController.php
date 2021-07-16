@@ -14,14 +14,6 @@ class PostsController extends Controller
     {
         DB::connection()->enableQueryLog();
 
-        $posts = BlogPost::all();
-
-        foreach ($posts as $post) {
-            foreach ($post->comments as $comment) {
-                echo $comment->content;
-            }
-        }
-
         return view('posts.index', [
             'posts' => BlogPost::orderBy('updated_at', 'desc')->take(10)->get()
         ]);
