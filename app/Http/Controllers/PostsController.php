@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\BlogPost;
 use App\Http\Requests\StorePost;
+use App\Models\BlogPost;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 use Illuminate\Support\Facades\DB;
 
@@ -72,7 +73,13 @@ class PostsController extends Controller
      */
     public function edit($id)
     {
-        return view('posts.edit', ['post' => BlogPost::findOrFail($id)]);
+        $post = BlogPost::findOrFail($id);
+
+        if (Gate::denies('update.post', $post)) {
+            abort(403, 'Kamu tidak bisa melakukan update pada post ini');
+        }
+
+        return view('posts.edit', ['post' => $post]);
     }
 
     /**
@@ -85,6 +92,11 @@ class PostsController extends Controller
     public function update(StorePost $request, $id)
     {
         $post = BlogPost::findOrFail($id);
+
+        if (Gate::denies('update.post', $post)) {
+            abort(403, 'Kamu tidak bisa melakukan update pada post ini');
+        }
+
         $validated = $request->validated();
         $post->fill($validated);
         $post->save();
@@ -103,6 +115,11 @@ class PostsController extends Controller
     public function destroy($id)
     {
         $post = BlogPost::findOrFail($id);
+
+        if (Gate::denies('delete.post', $post)) {
+            abort(403, 'Kamu tidak bisa melakukan hapus pada post ini');
+        }
+
         $post->delete();
 
         session()->flash('status', 'Blog post berhasil dihapus');
